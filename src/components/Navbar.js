@@ -1,61 +1,54 @@
-import React from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import React, { useState } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import Navbar from "./Navbar";
+import About from "./About";
+import Home from "./Home";
+import Login from "./Login";
 
-const linkStyles = {
-  width: "100px",
-  padding: "12px",
-  margin: "0 6px 6px",
-  background: "blue",
-  textDecoration: "none",
-  color: "white",
-};
+function App() {
+  // Define state variable to keep track of login status
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-function Navbar({ setIsLoggedIn }) {
-  const history = useHistory();
+  // Function to handle login
+  function handleLogin() {
+    setIsLoggedIn(true);
+  }
 
+  // Function to handle logout
   function handleLogout() {
     setIsLoggedIn(false);
-    history.push("/login");
   }
 
   return (
     <div>
-      <NavLink
-        to="/"
-        /* set exact so it knows to only set activeStyle when route is deeply equal to link */
-        exact
-        /* add styling to Navlink */
-        style={linkStyles}
-        /* add prop for activeStyle */
-        activeStyle={{
-          background: "darkblue",
-        }}
-      >
-        Home
-      </NavLink>
-      <NavLink
-        to="/about"
-        exact
-        style={linkStyles}
-        activeStyle={{
-          background: "darkblue",
-        }}
-      >
-        About
-      </NavLink>
-      <NavLink
-        to="/login"
-        exact
-        style={linkStyles}
-        activeStyle={{
-          background: "darkblue",
-        }}
-      >
-        Login
-      </NavLink>
-      <button onClick={handleLogout}>Logout</button>
+      {/* Render Navbar component and pass in isLoggedIn and handleLogout props */}
+      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+
+      {/* Use Switch and Route components from react-router-dom to define routes */}
+      <Switch>
+        {/* Define route for About component */}
+        <Route exact path="/about">
+          {/* Render About component */}
+          <About />
+        </Route>
+
+        {/* Define route for Home component */}
+        <Route exact path="/">
+          {/* Render Home component */}
+          <Home />
+        </Route>
+
+        {/* Define route for Login component */}
+        <Route exact path="/login">
+          {/* Render Login component and pass in handleLogin prop */}
+          <Login handleLogin={handleLogin} />
+        </Route>
+
+        {/* Redirect any other paths to Home */}
+        <Redirect to="/" />
+      </Switch>
     </div>
   );
 }
 
-export default Navbar;
+export default App;
